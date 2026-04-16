@@ -45,6 +45,7 @@ TRANSLATIONS = {
             "/status — Show current monitoring status\n"
             "/language — Change notification language\n"
             "/server — Change game server\n"
+            "/timezone — Change your timezone\n"
             "/stop — Stop notifications\n"
             "/help — Show this help message"
         ),
@@ -61,6 +62,8 @@ TRANSLATIONS = {
         "select_language": "🌐 Select notification language:",
         "language_changed": "✅ Language changed to English.",
         "already_logged_in": "You are already logged in as <b>{nickname}</b>. Logging in again will replace your current session.",
+        "select_timezone": "🕐 Select your timezone:",
+        "timezone_changed": "✅ Timezone set to {timezone}.",
         "api_error": "⚠️ Error communicating with Wargaming API. Will retry shortly.",
         "group_welcome": (
             "👋 Hello! I'm the WoT Clan Reserves Bot.\n\n"
@@ -114,6 +117,7 @@ TRANSLATIONS = {
             "/status — Показати поточний статус\n"
             "/language — Змінити мову сповіщень\n"
             "/server — Змінити ігровий сервер\n"
+            "/timezone — Змінити часовий пояс\n"
             "/stop — Зупинити сповіщення\n"
             "/help — Показати цю довідку"
         ),
@@ -130,6 +134,8 @@ TRANSLATIONS = {
         "select_language": "🌐 Оберіть мову сповіщень:",
         "language_changed": "✅ Мову змінено на українську.",
         "already_logged_in": "Ви вже увійшли як <b>{nickname}</b>. Повторний вхід замінить поточну сесію.",
+        "select_timezone": "🕐 Оберіть часовий пояс:",
+        "timezone_changed": "✅ Часовий пояс встановлено: {timezone}.",
         "api_error": "⚠️ Помилка зв'язку з API Wargaming. Спробую ще раз.",
         "group_welcome": (
             "👋 Привіт! Я бот кланових резервів WoT.\n\n"
@@ -183,6 +189,7 @@ TRANSLATIONS = {
             "/status — Показать текущий статус\n"
             "/language — Изменить язык уведомлений\n"
             "/server — Изменить игровой сервер\n"
+            "/timezone — Изменить часовой пояс\n"
             "/stop — Остановить уведомления\n"
             "/help — Показать эту справку"
         ),
@@ -199,6 +206,8 @@ TRANSLATIONS = {
         "select_language": "🌐 Выберите язык уведомлений:",
         "language_changed": "✅ Язык изменён на русский.",
         "already_logged_in": "Вы уже вошли как <b>{nickname}</b>. Повторный вход заменит текущую сессию.",
+        "select_timezone": "🕐 Выберите часовой пояс:",
+        "timezone_changed": "✅ Часовой пояс установлен: {timezone}.",
         "api_error": "⚠️ Ошибка связи с API Wargaming. Попробую ещё раз.",
         "group_welcome": (
             "👋 Привет! Я бот клановых резервов WoT.\n\n"
@@ -225,6 +234,31 @@ def detect_language(telegram_language_code: str | None) -> str:
         return "en"
     code = telegram_language_code.lower().split("-")[0]
     return LANGUAGE_CODE_MAP.get(code, "en")
+
+
+# Map detected language to most likely IANA timezone
+LANGUAGE_TIMEZONE_MAP = {
+    "uk": "Europe/Kyiv",      # Ukraine → EET/EEST (UTC+2/+3)
+    "ru": "Europe/Kyiv",     # Russian-speaking on EU → same timezone as Ukraine
+    "en": None,               # English → use server-based default
+}
+
+# Fallback: server region to IANA timezone (for English users)
+REGION_TIMEZONE_MAP = {
+    "eu": "Europe/Berlin",    # CET/CEST (UTC+1/+2)
+    "na": "America/New_York", # EST/EDT (UTC-5/-4)
+    "asia": "Asia/Singapore", # SGT (UTC+8)
+}
+
+
+def get_default_timezone(lang: str, region: str | None = None) -> str:
+    """Get the best default IANA timezone based on language and region."""
+    tz = LANGUAGE_TIMEZONE_MAP.get(lang)
+    if tz:
+        return tz
+    if region:
+        return REGION_TIMEZONE_MAP.get(region, "UTC")
+    return "UTC"
 
 
 def t(lang: str, key: str, **kwargs) -> str:
