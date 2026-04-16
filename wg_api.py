@@ -44,12 +44,17 @@ async def get_login_url(region: str, state: str) -> str:
         "display": "page",
     }
 
+    logger.info("WG auth request: url=%s, redirect_uri=%s", url, params["redirect_uri"])
+
     async with aiohttp.ClientSession() as session:
         async with session.post(url, data=params) as resp:
-            data = await resp.json()
+            raw_text = await resp.text()
+            logger.info("WG auth response [%s]: %s", resp.status, raw_text)
+            data = await resp.json(content_type=None) if raw_text else {}
 
     if data.get("status") != "ok":
         error = data.get("error", {})
+        logger.error("WG auth login FAILED: %s | full response: %s", error, data)
         raise RuntimeError(f"WG auth login error: {error}")
 
     return data["data"]["location"]
