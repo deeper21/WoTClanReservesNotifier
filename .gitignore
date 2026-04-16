@@ -3,3 +3,4 @@ __pycache__/
 .env
 bot_data.db
 *.db-journal
+encryption.key

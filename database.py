@@ -6,6 +6,7 @@ import logging
 from contextlib import contextmanager
 
 from config import DATABASE_PATH
+from crypto import encrypt_token, decrypt_token
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +74,11 @@ def _connect():
 # ── Chat operations ─────────────────────────────────────────────
 
 def upsert_chat(chat_id: int, **fields):
-    """Insert or update a chat record."""
+    """Insert or update a chat record. Encrypts access_token before storing."""
     now = int(time.time())
+    # Encrypt token if provided
+    if "access_token" in fields and fields["access_token"] is not None:
+        fields["access_token"] = encrypt_token(fields["access_token"])
     with _connect() as conn:
         existing = conn.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,)).fetchone()
         if existing:
@@ -91,10 +95,17 @@ def upsert_chat(chat_id: int, **fields):
             conn.execute(f"INSERT INTO chats ({cols}) VALUES ({placeholders})", list(fields.values()))
 
 
+def _decrypt_chat(row: dict) -> dict:
+    """Decrypt access_token in a chat record."""
+    if row.get("access_token"):
+        row["access_token"] = decrypt_token(row["access_token"])
+    return row
+
+
 def get_chat(chat_id: int) -> dict | None:
     with _connect() as conn:
         row = conn.execute("SELECT * FROM chats WHERE chat_id = ?", (chat_id,)).fetchone()
-        return dict(row) if row else None
+        return _decrypt_chat(dict(row)) if row else None
 
 
 def get_active_chats() -> list[dict]:
@@ -108,7 +119,7 @@ def get_active_chats() -> list[dict]:
                  AND token_expires > ?""",
             (now,),
         ).fetchall()
-        return [dict(r) for r in rows]
+        return [_decrypt_chat(dict(r)) for r in rows]
 
 
 def get_chats_with_expiring_tokens() -> list[dict]:
@@ -125,7 +136,7 @@ def get_chats_with_expiring_tokens() -> list[dict]:
                  AND token_warning_sent = 0""",
             (now, now + TOKEN_EXPIRY_WARNING),
         ).fetchall()
-        return [dict(r) for r in rows]
+        return [_decrypt_chat(dict(r)) for r in rows]
 
 
 def get_chats_with_expired_tokens() -> list[dict]:
@@ -140,11 +151,19 @@ def get_chats_with_expired_tokens() -> list[dict]:
                  AND token_expires > ?""",
             (now, now - 300),
         ).fetchall()
-        return [dict(r) for r in rows]
+        return [_decrypt_chat(dict(r)) for r in rows]
 
 
 def deactivate_chat(chat_id: int):
     upsert_chat(chat_id, is_active=0, access_token=None)
+
+
+def delete_chat(chat_id: int):
+    """Permanently delete all data for a chat."""
+    with _connect() as conn:
+        conn.execute("DELETE FROM chats WHERE chat_id = ?", (chat_id,))
+        conn.execute("DELETE FROM auth_states WHERE chat_id = ?", (chat_id,))
+        conn.execute("DELETE FROM notified_reserves WHERE chat_id = ?", (chat_id,))
 
 
 # ── Auth state operations ───────────────────────────────────────

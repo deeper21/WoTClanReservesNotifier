@@ -172,6 +172,11 @@ async def cmd_login(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    # Show privacy notice before login
+    await update.message.reply_text(
+        t(lang, "privacy_notice"), parse_mode=ParseMode.HTML
+    )
+
     keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton(t(lang, "login_button"), url=login_url)]]
     )
@@ -361,6 +366,24 @@ async def cmd_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(t(lang, "stopped"), parse_mode=ParseMode.HTML)
 
 
+async def cmd_delete(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Delete all stored data for this chat and confirm."""
+    chat_id = update.effective_chat.id
+    lang = _get_lang(chat_id, update.effective_user.language_code if update.effective_user else None)
+
+    keyboard = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(t(lang, "delete_confirm_yes"), callback_data="delete:yes"),
+                InlineKeyboardButton(t(lang, "delete_confirm_no"), callback_data="delete:no"),
+            ]
+        ]
+    )
+    await update.message.reply_text(
+        t(lang, "delete_confirm"), reply_markup=keyboard, parse_mode=ParseMode.HTML
+    )
+
+
 # ── Callback query handlers ─────────────────────────────────────
 
 async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -396,6 +419,12 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         db.save_auth_state(state, chat_id)
         try:
             login_url = await wg_api.get_login_url(region, state)
+
+            # Show privacy notice before login
+            await query.message.reply_text(
+                t(lang, "privacy_notice"), parse_mode=ParseMode.HTML
+            )
+
             keyboard = InlineKeyboardMarkup(
                 [[InlineKeyboardButton(t(lang, "login_button"), url=login_url)]]
             )
@@ -445,6 +474,20 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode=ParseMode.HTML,
         )
 
+    elif data.startswith("delete:"):
+        choice = data.split(":", 1)[1]
+        lang = _get_lang(chat_id)
+        if choice == "yes":
+            db.delete_chat(chat_id)
+            logger.info("Chat %s deleted all their data", chat_id)
+            await query.edit_message_text(
+                t(lang, "data_deleted"), parse_mode=ParseMode.HTML
+            )
+        else:
+            await query.edit_message_text(
+                t(lang, "delete_cancelled"), parse_mode=ParseMode.HTML
+            )
+
 
 # ── Application setup ───────────────────────────────────────────
 
@@ -475,6 +518,7 @@ def main():
     application.add_handler(CommandHandler("server", cmd_server))
     application.add_handler(CommandHandler("timezone", cmd_timezone))
     application.add_handler(CommandHandler("reserves", cmd_reserves))
+    application.add_handler(CommandHandler("delete", cmd_delete))
     application.add_handler(CommandHandler("stop", cmd_stop))
     application.add_handler(CallbackQueryHandler(handle_callback))
 

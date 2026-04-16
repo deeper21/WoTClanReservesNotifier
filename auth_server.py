@@ -74,6 +74,7 @@ async def handle_auth_callback(request: web.Request) -> web.Response:
 
     account_id = int(account_id)
     expires_at = int(expires_at)
+    logger.info("Auth success for chat %s: nickname=%s account_id=%s", chat_id, nickname, account_id)
 
     chat = db.get_chat(chat_id)
     lang = chat["language"] if chat else "en"

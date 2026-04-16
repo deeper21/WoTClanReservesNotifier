@@ -39,6 +39,25 @@ TRANSLATIONS = {
         "no_active_reserves": "No active clan reserves at the moment.",
         "reserves_cooldown": "⏳ Please wait {seconds}s before checking again.",
         "login_required": "🔑 You need to log in first. Use /login.",
+        "delete_confirm": (
+            "⚠️ <b>Are you sure you want to delete all your data?</b>\n\n"
+            "This will permanently remove your Wargaming account link, "
+            "access token, and all settings. This cannot be undone."
+        ),
+        "delete_confirm_yes": "Yes, delete everything",
+        "delete_confirm_no": "Cancel",
+        "data_deleted": "✅ All your data has been permanently deleted. Use /start to set up again.",
+        "delete_cancelled": "👌 Deletion cancelled. Your data is unchanged.",
+        "privacy_notice": (
+            "🔒 <b>Privacy notice</b>\n\n"
+            "By logging in, this bot will store:\n"
+            "• Your Wargaming nickname and account ID\n"
+            "• An encrypted access token to check clan reserves\n"
+            "• Your Telegram chat ID, language, and timezone\n\n"
+            "Your token is encrypted at rest and is only used to read "
+            "clan reserve status. You can delete all your data at any time "
+            "with /delete."
+        ),
         "not_in_clan": "⚠️ Your account doesn't appear to be in a clan. Join a clan to receive reserve notifications.",
         "help": (
             "📋 <b>Available commands:</b>\n\n"
@@ -50,6 +69,7 @@ TRANSLATIONS = {
             "/server — Change game server\n"
             "/timezone — Change your timezone\n"
             "/stop — Stop notifications\n"
+            "/delete — Delete all your stored data\n"
             "/help — Show this help message"
         ),
         "status": (
@@ -114,6 +134,25 @@ TRANSLATIONS = {
         "no_active_reserves": "Наразі немає активних кланових резервів.",
         "reserves_cooldown": "⏳ Зачекайте {seconds}с перед наступною перевіркою.",
         "login_required": "🔑 Спочатку потрібно увійти. Використовуйте /login.",
+        "delete_confirm": (
+            "⚠️ <b>Ви впевнені, що хочете видалити всі свої дані?</b>\n\n"
+            "Це назавжди видалить прив'язку акаунту Wargaming, "
+            "токен доступу та всі налаштування. Це неможливо скасувати."
+        ),
+        "delete_confirm_yes": "Так, видалити все",
+        "delete_confirm_no": "Скасувати",
+        "data_deleted": "✅ Всі ваші дані видалено назавжди. Використовуйте /start для повторного налаштування.",
+        "delete_cancelled": "👌 Видалення скасовано. Ваші дані не змінено.",
+        "privacy_notice": (
+            "🔒 <b>Повідомлення про конфіденційність</b>\n\n"
+            "Після входу бот зберігатиме:\n"
+            "• Ваш нікнейм та ID акаунту Wargaming\n"
+            "• Зашифрований токен доступу для перевірки резервів клану\n"
+            "• ID чату Telegram, мову та часовий пояс\n\n"
+            "Токен зашифрований та використовується лише для перевірки "
+            "статусу кланових резервів. Ви можете видалити всі свої дані "
+            "в будь-який момент командою /delete."
+        ),
         "not_in_clan": "⚠️ Ваш акаунт не належить до клану. Вступіть до клану, щоб отримувати сповіщення.",
         "help": (
             "📋 <b>Доступні команди:</b>\n\n"
@@ -125,6 +164,7 @@ TRANSLATIONS = {
             "/server — Змінити ігровий сервер\n"
             "/timezone — Змінити часовий пояс\n"
             "/stop — Зупинити сповіщення\n"
+            "/delete — Видалити всі збережені дані\n"
             "/help — Показати цю довідку"
         ),
         "status": (
@@ -189,6 +229,25 @@ TRANSLATIONS = {
         "no_active_reserves": "На данный момент нет активных клановых резервов.",
         "reserves_cooldown": "⏳ Подождите {seconds}с перед следующей проверкой.",
         "login_required": "🔑 Сначала нужно войти. Используйте /login.",
+        "delete_confirm": (
+            "⚠️ <b>Вы уверены, что хотите удалить все свои данные?</b>\n\n"
+            "Это навсегда удалит привязку аккаунта Wargaming, "
+            "токен доступа и все настройки. Это невозможно отменить."
+        ),
+        "delete_confirm_yes": "Да, удалить всё",
+        "delete_confirm_no": "Отмена",
+        "data_deleted": "✅ Все ваши данные удалены навсегда. Используйте /start для повторной настройки.",
+        "delete_cancelled": "👌 Удаление отменено. Ваши данные не изменены.",
+        "privacy_notice": (
+            "🔒 <b>Уведомление о конфиденциальности</b>\n\n"
+            "После входа бот будет хранить:\n"
+            "• Ваш никнейм и ID аккаунта Wargaming\n"
+            "• Зашифрованный токен доступа для проверки резервов клана\n"
+            "• ID чата Telegram, язык и часовой пояс\n\n"
+            "Токен зашифрован и используется только для проверки "
+            "статуса клановых резервов. Вы можете удалить все свои данные "
+            "в любой момент командой /delete."
+        ),
         "not_in_clan": "⚠️ Ваш аккаунт не состоит в клане. Вступите в клан для получения уведомлений.",
         "help": (
             "📋 <b>Доступные команды:</b>\n\n"
@@ -200,6 +259,7 @@ TRANSLATIONS = {
             "/server — Изменить игровой сервер\n"
             "/timezone — Изменить часовой пояс\n"
             "/stop — Остановить уведомления\n"
+            "/delete — Удалить все сохранённые данные\n"
             "/help — Показать эту справку"
         ),
         "status": (
