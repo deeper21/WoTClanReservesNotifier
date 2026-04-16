@@ -25,9 +25,8 @@ A Telegram bot that notifies you when your World of Tanks clan activates reserve
 2. Sign in with your Wargaming account
 3. Go to **My Applications** → **Add Application**
 4. Name: anything you like (e.g., "Clan Reserves Bot")
-5. Type: **Server** (for the IP field, enter `0.0.0.0` — it's not enforced for API calls)
-6. After creation, edit the app and add your Railway domain to **Allowed domains** (e.g., `your-app.up.railway.app`) — this is required for the OAuth login redirect to work
-7. Copy the **Application ID**
+5. Type: **Server** (for the IP field, enter `0.0.0.0`)
+6. Save and copy the **Application ID**
 
 ### 3. Deploy to Railway (free tier / ~$5/mo)
 
@@ -40,14 +39,7 @@ A Telegram bot that notifies you when your World of Tanks clan activates reserve
    - `PUBLIC_URL` = your Railway app URL (find it in **Settings** → **Networking** → **Generate Domain**, e.g. `https://your-app.up.railway.app`)
 5. Railway will auto-deploy. Check **Deployments** for logs.
 
-### 4. Configure Wargaming Allowed Domains
-
-Back in [developers.wargaming.net](https://developers.wargaming.net/applications/):
-1. Edit your application
-2. Under **Allowed domains**, add your Railway domain (e.g., `your-app.up.railway.app`)
-3. Save
-
-### 5. Test the Bot
+### 4. Test the Bot
 
 Open your bot on Telegram, press **Start**, select your server, and log in!
 
@@ -79,6 +71,7 @@ python bot.py
 | `/status`   | Show current monitoring status       |
 | `/language` | Change notification language         |
 | `/server`   | Change game server                   |
+| `/timezone` | Change your timezone                 |
 | `/stop`     | Stop notifications                   |
 | `/help`     | Show help message                    |
 

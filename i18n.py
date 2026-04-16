@@ -37,11 +37,14 @@ TRANSLATIONS = {
             "⏳ End: {end_time}\n"
         ),
         "no_active_reserves": "No active clan reserves at the moment.",
+        "reserves_cooldown": "⏳ Please wait {seconds}s before checking again.",
+        "login_required": "🔑 You need to log in first. Use /login.",
         "not_in_clan": "⚠️ Your account doesn't appear to be in a clan. Join a clan to receive reserve notifications.",
         "help": (
             "📋 <b>Available commands:</b>\n\n"
             "/start — Start the bot / reset setup\n"
             "/login — Log in with Wargaming account\n"
+            "/reserves — Check active clan reserves now\n"
             "/status — Show current monitoring status\n"
             "/language — Change notification language\n"
             "/server — Change game server\n"
@@ -109,11 +112,14 @@ TRANSLATIONS = {
             "⏳ Кінець: {end_time}\n"
         ),
         "no_active_reserves": "Наразі немає активних кланових резервів.",
+        "reserves_cooldown": "⏳ Зачекайте {seconds}с перед наступною перевіркою.",
+        "login_required": "🔑 Спочатку потрібно увійти. Використовуйте /login.",
         "not_in_clan": "⚠️ Ваш акаунт не належить до клану. Вступіть до клану, щоб отримувати сповіщення.",
         "help": (
             "📋 <b>Доступні команди:</b>\n\n"
             "/start — Запустити бота / скинути налаштування\n"
             "/login — Увійти через акаунт Wargaming\n"
+            "/reserves — Перевірити активні резерви зараз\n"
             "/status — Показати поточний статус\n"
             "/language — Змінити мову сповіщень\n"
             "/server — Змінити ігровий сервер\n"
@@ -181,11 +187,14 @@ TRANSLATIONS = {
             "⏳ Конец: {end_time}\n"
         ),
         "no_active_reserves": "На данный момент нет активных клановых резервов.",
+        "reserves_cooldown": "⏳ Подождите {seconds}с перед следующей проверкой.",
+        "login_required": "🔑 Сначала нужно войти. Используйте /login.",
         "not_in_clan": "⚠️ Ваш аккаунт не состоит в клане. Вступите в клан для получения уведомлений.",
         "help": (
             "📋 <b>Доступные команды:</b>\n\n"
             "/start — Запустить бота / сбросить настройки\n"
             "/login — Войти через аккаунт Wargaming\n"
+            "/reserves — Проверить активные резервы сейчас\n"
             "/status — Показать текущий статус\n"
             "/language — Изменить язык уведомлений\n"
             "/server — Изменить игровой сервер\n"

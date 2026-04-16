@@ -10,6 +10,16 @@ from config import DATABASE_PATH
 logger = logging.getLogger(__name__)
 
 
+def _migrate_db(conn):
+    """Add columns that may not exist in older databases."""
+    cursor = conn.execute("PRAGMA table_info(chats)")
+    columns = {row[1] for row in cursor.fetchall()}
+    if "utc_offset" not in columns:
+        conn.execute("ALTER TABLE chats ADD COLUMN utc_offset REAL NOT NULL DEFAULT 0")
+    if "timezone_name" not in columns:
+        conn.execute("ALTER TABLE chats ADD COLUMN timezone_name TEXT")
+
+
 def init_db():
     """Create tables if they don't exist."""
     with _connect() as conn:
@@ -24,6 +34,8 @@ def init_db():
                 access_token    TEXT,
                 token_expires   INTEGER,
                 clan_id         INTEGER,
+                utc_offset      REAL    NOT NULL DEFAULT 0,
+                timezone_name   TEXT,
                 is_active       INTEGER NOT NULL DEFAULT 1,
                 token_warning_sent INTEGER NOT NULL DEFAULT 0,
                 created_at      INTEGER NOT NULL,
@@ -44,6 +56,7 @@ def init_db():
             );
             """
         )
+        _migrate_db(conn)
 
 
 @contextmanager

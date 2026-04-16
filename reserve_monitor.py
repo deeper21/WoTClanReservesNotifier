@@ -16,10 +16,18 @@ from i18n import t
 logger = logging.getLogger(__name__)
 
 
-def _format_time(unix_ts: int, lang: str) -> str:
-    """Format a unix timestamp into a human-readable string."""
-    dt = datetime.fromtimestamp(unix_ts, tz=timezone.utc)
-    return dt.strftime("%Y-%m-%d %H:%M UTC")
+def _format_time(unix_ts: int, timezone_name: str = "UTC") -> str:
+    """Format a unix timestamp into a human-readable string with user's timezone.
+    Uses IANA timezone names for automatic DST handling."""
+    from zoneinfo import ZoneInfo
+    try:
+        tz = ZoneInfo(timezone_name)
+    except (KeyError, Exception):
+        tz = timezone.utc
+    dt = datetime.fromtimestamp(unix_ts, tz=tz)
+    # Show timezone abbreviation (e.g., EET, EEST, MSK, CET, EST)
+    tz_abbr = dt.strftime("%Z")
+    return dt.strftime(f"%Y-%m-%d %H:%M {tz_abbr}")
 
 
 async def _check_chat_reserves(bot: Bot, chat: dict):
@@ -28,6 +36,7 @@ async def _check_chat_reserves(bot: Bot, chat: dict):
     lang = chat["language"]
     region = chat["region"]
     access_token = chat["access_token"]
+    tz_name = chat.get("timezone_name") or "UTC"
 
     try:
         active_reserves = await wg_api.get_clan_reserves(region, access_token)
@@ -48,8 +57,8 @@ async def _check_chat_reserves(bot: Bot, chat: dict):
             "reserve_activated",
             reserve_name=reserve.reserve_name,
             level=reserve.level,
-            start_time=_format_time(reserve.activated_at, lang),
-            end_time=_format_time(reserve.active_till, lang),
+            start_time=_format_time(reserve.activated_at, tz_name),
+            end_time=_format_time(reserve.active_till, tz_name),
         )
 
         try:
